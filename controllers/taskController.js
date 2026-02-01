@@ -3,39 +3,33 @@ import User from "../Models/userModel.js";
 
 export const createTask = async (req, res) => {
     try {
+        console.log("=== ENTERING CREATE TASK CONTROLLER ===");
         const { title, description, dependencies, estimatedTime, priority } = req.body;
-        
-        // Validate dependencies
-        if (dependencies && dependencies.length > 0) {
-            const dependentTasks = await Task.find({ _id: { $in: dependencies } });
-            if (dependentTasks.length !== dependencies.length) {
-                return res.status(400).json({ message: "Some dependency tasks not found" });
-            }
-        }
+
+        // Ensure dependencies is an array even if not provided
+        const taskDependencies = Array.isArray(dependencies) ? dependencies : [];
 
         const newTask = await Task.create({
             title,
             description,
-            dependencies: dependencies || [],
-            createdBy: req.user._id,
+            dependencies: taskDependencies,
+            createdBy: req.user._id, // Set by authMiddleware
             estimatedTime,
             priority: priority || 'medium'
         });
 
-        // Update dependent tasks to include this task
-        if (dependencies && dependencies.length > 0) {
-            await Task.updateMany(
-                { _id: { $in: dependencies } },
-                { $addToSet: { dependentTasks: newTask._id } }
-            );
-        }
-
-        res.status(201).json({
+        // Use return to ensure the function stops here
+        return res.status(201).json({
             message: "Task created successfully",
             task: newTask
         });
+
     } catch (error) {
-        res.status(500).json({ message: "Server error", error: error.message });
+        console.error("Error in createTask:", error);
+        return res.status(500).json({ 
+            message: "Server error", 
+            error: error.message 
+        });
     }
 };
 
@@ -290,4 +284,13 @@ export const getTasksByStatus = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }
+};
+
+export const testEndpoint = async (req, res) => {
+    console.log("Test endpoint reached!");
+    console.log("User:", req.user);
+    res.status(200).json({ 
+        message: "Test successful",
+        user: req.user 
+    });
 };

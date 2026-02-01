@@ -9,13 +9,13 @@ import {
     getAvailableTasks,
     updateTask,
     getTaskDependencyGraph,
-    getTasksByStatus
+    getTasksByStatus,
+    testEndpoint
 } from '../controllers/taskController.js';
 import { authMiddleware, creatorMiddleware, executorMiddleware } from '../Middleware/authMiddleware.js';
-
 const taskRouter = express.Router();
 
-// All task routes require authentication
+// Apply authMiddleware to ALL task routes
 taskRouter.use(authMiddleware);
 
 // Creator routes
@@ -28,10 +28,13 @@ taskRouter.get("/executor", executorMiddleware, getExecutorTasks);
 taskRouter.get("/available", executorMiddleware, getAvailableTasks);
 taskRouter.put("/execute/:id", executorMiddleware, executeTask);
 
-// Common routes
+// Common routes (accessible to both with auth)
 taskRouter.get("/", getAllTasks);
 taskRouter.get("/:id", getTaskById);
 taskRouter.get("/dependency/:id", getTaskDependencyGraph);
 taskRouter.get("/status/:status", getTasksByStatus);
+
+// Add this route for testing
+taskRouter.get("/test", testEndpoint);
 
 export default taskRouter;

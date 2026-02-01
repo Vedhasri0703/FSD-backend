@@ -43,12 +43,12 @@ const taskSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-// Middleware to update dependent tasks when this task is completed
-taskSchema.pre('save', async function(next) {
+// Fixed code
+taskSchema.pre('save', async function() {
     if (this.isModified('status') && this.status === 'completed') {
         this.completionDate = new Date();
     }
-    next();
+    // No next() needed here because the function is async
 });
 
 const Task = mongoose.model("Task", taskSchema);

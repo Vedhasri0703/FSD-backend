@@ -24,6 +24,15 @@ app.use(cors({
 // Connect to database
 connectDB();
 
+// Add this before your routes in index.js
+app.use((req, res, next) => {
+    console.log(`\n=== ${req.method} ${req.path} ===`);
+    console.log("Headers:", req.headers);
+    console.log("Body:", req.body);
+    console.log("Cookies:", req.cookies);
+    next(); // Make sure this is here
+});
+
 // Routes
 app.get("/", (req, res) => {
     res.status(200).json({ message: "Dependency-Based Task Execution System API is running" });
