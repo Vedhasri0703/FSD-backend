@@ -1,9 +1,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import connectDB from './Database/connection.js';
-import authRouter from './Routers/authRouter.js';
-import taskRouter from './Routers/taskRouter.js';
+import connectDB from './database/connection.js';
+import authRouter from './routers/authRouter.js';
+import taskRouter from './routers/taskRouter.js';
 import cookieParser from 'cookie-parser';
 import dns from 'node:dns';
 dns.setServers(['8.8.8.8','1.1.1.1']);
